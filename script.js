@@ -12,42 +12,12 @@ const playlist = [
   {
     title: "O Je Mane Na Mana",
     artist: "Arnob & Sunidhi Nayak",
-    src: "/audio/song1.mp3"
+    src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" // Sample Chill Lofi Audio
   },
   {
     title: "Ekhon Onek Raat",
     artist: "Anupam Roy (Hemlock Society)",
-    src: "/audio/song2.mp3"
-  },
-  {
-    title: "Amake Amar Moto Thakte Dao",
-    artist: "Anupam Roy (Autograph)",
-    src: "/audio/song3.mp3"
-  },
-  {
-    title: "Mayabono Biharini",
-    artist: "Somlata (Bedroom)",
-    src: "/audio/song4.mp3"
-  },
-  {
-    title: "Boba Tunnel",
-    artist: "Anupam Roy (Chotushkone)",
-    src: "/audio/song5.mp3"
-  },
-  {
-    title: "Benche Thakar Gaan",
-    artist: "Rupam & Anupam (Autograph)",
-    src: "/audio/song6.mp3"
-  },
-  {
-    title: "Ekbar Bol",
-    artist: "Anupam Roy (Baishe Srabon)",
-    src: "/audio/song7.mp3"
-  },
-  {
-    title: "Ranjha",
-    artist: "B Praak & Jasleen Royal (Shershaah)",
-    src: "/audio/song8.mp3"
+    src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3"
   }
 ];
 
@@ -66,23 +36,17 @@ function loadTrack(index) {
   trackTitle.textContent = track.title;
   trackArtist.textContent = track.artist;
   audio.src = track.src;
-  audio.load(); // Force audio reload
 }
 
 function playTrack() {
-  const playPromise = audio.play();
-  if (playPromise !== undefined) {
-    playPromise
-      .then(() => {
-        isPlaying = true;
-        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-      })
-      .catch((error) => {
-        console.error("Audio playback failed:", error);
-        isPlaying = false;
-        playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
-      });
-  }
+  audio.play()
+    .then(() => {
+      isPlaying = true;
+      playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    })
+    .catch((err) => {
+      console.error("Audio playback error:", err);
+    });
 }
 
 function pauseTrack() {
