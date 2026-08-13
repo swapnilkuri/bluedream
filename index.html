@@ -7,7 +7,7 @@
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="styles.css" />
-  <!-- Font Awesome for Player Icons -->
+  <!-- Font Awesome for Player & Social Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body class="h-screen w-screen overflow-hidden bg-slate-950 text-white relative font-sans">
@@ -49,8 +49,15 @@
     </p>
   </main>
 
-  <!-- Bottom Floating Audio Player Widget -->
-  <footer class="absolute bottom-6 left-0 right-0 flex justify-center z-20 px-4">
+  <!-- Bottom Navigation & Controls Bar -->
+  <footer class="absolute bottom-6 left-0 right-0 z-20 px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    
+    <!-- Bottom Left: Copyright Badge -->
+    <div class="bg-slate-900/60 backdrop-blur-md border border-slate-700/50 px-5 py-2.5 rounded-2xl text-xs text-slate-300 font-medium tracking-wider shadow-lg">
+      © 2026 Detx Gaming
+    </div>
+
+    <!-- Bottom Center: Audio Player Widget -->
     <div class="bg-slate-900/80 backdrop-blur-lg border border-slate-700/60 rounded-2xl p-3 sm:px-6 sm:py-3 flex items-center space-x-4 shadow-2xl max-w-sm w-full">
       
       <!-- Track Thumbnail -->
@@ -69,6 +76,22 @@
         <i class="fa-solid fa-play ml-0.5"></i>
       </button>
     </div>
+
+    <!-- Bottom Right: Social Link Buttons -->
+    <div class="flex items-center space-x-3">
+      <a href="https://www.youtube.com/@detxislive" target="_blank" rel="noopener noreferrer" 
+         class="bg-slate-900/60 backdrop-blur-md border border-slate-700/50 px-4 py-2.5 rounded-2xl text-xs text-slate-300 hover:text-red-400 hover:border-red-500/50 transition flex items-center space-x-2 font-medium shadow-lg">
+        <i class="fa-brands fa-youtube text-red-500 text-sm"></i>
+        <span>YouTube</span>
+      </a>
+
+      <a href="https://www.instagram.com/detxgaming/" target="_blank" rel="noopener noreferrer" 
+         class="bg-slate-900/60 backdrop-blur-md border border-slate-700/50 px-4 py-2.5 rounded-2xl text-xs text-slate-300 hover:text-pink-400 hover:border-pink-500/50 transition flex items-center space-x-2 font-medium shadow-lg">
+        <i class="fa-brands fa-instagram text-pink-500 text-sm"></i>
+        <span>Instagram</span>
+      </a>
+    </div>
+
   </footer>
 
   <script src="script.js"></script>
