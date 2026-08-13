@@ -12,42 +12,42 @@ const playlist = [
   {
     title: "O Je Mane Na Mana",
     artist: "Arnob & Sunidhi Nayak",
-    src: "./audio/song1.mp3"
+    src: "/audio/song1.mp3"
   },
   {
     title: "Ekhon Onek Raat",
     artist: "Anupam Roy (Hemlock Society)",
-    src: "./audio/song2.mp3"
+    src: "/audio/song2.mp3"
   },
   {
     title: "Amake Amar Moto Thakte Dao",
     artist: "Anupam Roy (Autograph)",
-    src: "./audio/song3.mp3"
+    src: "/audio/song3.mp3"
   },
   {
     title: "Mayabono Biharini",
     artist: "Somlata (Bedroom)",
-    src: "./audio/song4.mp3"
+    src: "/audio/song4.mp3"
   },
   {
     title: "Boba Tunnel",
     artist: "Anupam Roy (Chotushkone)",
-    src: "./audio/song5.mp3"
+    src: "/audio/song5.mp3"
   },
   {
     title: "Benche Thakar Gaan",
     artist: "Rupam & Anupam (Autograph)",
-    src: "./audio/song6.mp3"
+    src: "/audio/song6.mp3"
   },
   {
     title: "Ekbar Bol",
     artist: "Anupam Roy (Baishe Srabon)",
-    src: "./audio/song7.mp3"
+    src: "/audio/song7.mp3"
   },
   {
     title: "Ranjha",
     artist: "B Praak & Jasleen Royal (Shershaah)",
-    src: "./audio/song8.mp3"
+    src: "/audio/song8.mp3"
   }
 ];
 
@@ -66,12 +66,23 @@ function loadTrack(index) {
   trackTitle.textContent = track.title;
   trackArtist.textContent = track.artist;
   audio.src = track.src;
+  audio.load(); // Force audio reload
 }
 
 function playTrack() {
-  audio.play().catch(err => console.log("Playback error:", err));
-  isPlaying = true;
-  playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise
+      .then(() => {
+        isPlaying = true;
+        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+      })
+      .catch((error) => {
+        console.error("Audio playback failed:", error);
+        isPlaying = false;
+        playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
+      });
+  }
 }
 
 function pauseTrack() {
@@ -113,12 +124,14 @@ loadTrack(currentTrackIndex);
 
 // --- 3. Fullscreen Toggle ---
 const fullscreenBtn = document.getElementById('fullscreen-btn');
-fullscreenBtn.addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
+if (fullscreenBtn) {
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
     }
-  }
-});
+  });
+}
