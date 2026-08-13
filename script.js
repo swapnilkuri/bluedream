@@ -12,42 +12,42 @@ const playlist = [
   {
     title: "O Je Mane Na Mana",
     artist: "Arnob & Sunidhi Nayak",
-    src: encodeURI("./audio/O Je Mane Na Mana (ও যে মানে না মানা) Arnob Sunidhi Nayak Best Of Tagore - 256.MP3")
+    src: "./audio/song1.mp3"
   },
   {
     title: "Ekhon Onek Raat",
     artist: "Anupam Roy (Hemlock Society)",
-    src: encodeURI("./audio/Ekhon Onek Raat (এখন অনেক রাত ) Hemlock Society Anupam Roy Srijit Parambrata Koel SVF - 320.MP3")
+    src: "./audio/song2.mp3"
   },
   {
     title: "Amake Amar Moto Thakte Dao",
     artist: "Anupam Roy (Autograph)",
-    src: encodeURI("./audio/Amake Amar Moto Thakte Dao Autograph Prosenjit Chatterjee Anupam Roy Srijit Mukherji SVF - 256,MP3")
+    src: "./audio/song3.mp3"
   },
   {
     title: "Mayabono Biharini",
     artist: "Somlata (Bedroom)",
-    src: encodeURI("./audio/Mayabono Biharini from BEDROOM by Somlata - 256.MP3")
+    src: "./audio/song4.mp3"
   },
   {
     title: "Boba Tunnel",
     artist: "Anupam Roy (Chotushkone)",
-    src: encodeURI("./audio/Official Boba Tunnel Video Song Bengali Film Chotushkone Anupam Roy - 256.MP3")
+    src: "./audio/song5.mp3"
   },
   {
     title: "Benche Thakar Gaan",
     artist: "Rupam & Anupam (Autograph)",
-    src: encodeURI("./audio/Benche Thakar Gaan (বেঁচে থাকার গান) Autograph Video Song Prosenjit Anupam Rupam Srijit - 320,MP3")
+    src: "./audio/song6.mp3"
   },
   {
     title: "Ekbar Bol",
     artist: "Anupam Roy (Baishe Srabon)",
-    src: encodeURI("./audio/Ekbar Bol (একবার বল) Lyrical Baishe Srabon Prosenjit Abir Parambrata Anupam Roy SVF - 256,MP3")
+    src: "./audio/song7.mp3"
   },
   {
     title: "Ranjha",
     artist: "B Praak & Jasleen Royal (Shershaah)",
-    src: encodeURI("./audio/Ranjha – Official Video Shershaah Sidharth–Kiara B Praak Jasleen Royal Romy Anvita Dutt - 320.MP3")
+    src: "./audio/song8.mp3"
   }
 ];
 
@@ -101,7 +101,7 @@ prevBtn.addEventListener('click', () => {
   if (isPlaying) playTrack();
 });
 
-// Auto-play next track when current track ends
+// Auto-play next track when current finishes
 audio.addEventListener('ended', () => {
   currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
   loadTrack(currentTrackIndex);
