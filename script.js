@@ -8,43 +8,80 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// --- 2. Multi-Song Playlist Engine ---
-const playlist = [
-  {
-    title: "O Je Mane Na Mana",
-    artist: "Arnob & Sunidhi Nayak",
-    videoId: "wC3FrA70jwI"
-  },
-  {
-    title: "Ekhon Onek Raat",
-    artist: "Anupam Roy (Hemlock Society)",
-    videoId: "l5Schfa_3Wk"
-  },
-  {
-    title: "Amake Amar Moto Thakte Dao",
-    artist: "Anupam Roy (Autograph)",
-    videoId: "vYsfSlEBh5Y"
-  },
-  {
-    title: "Mayabono Biharini",
-    artist: "Somlata (Bedroom)",
-    videoId: "1aGwOBgyWTo"
-  },
-  {
-    title: "Boba Tunnel",
-    artist: "Anupam Roy (Chotushkone)",
-    videoId: "GeX_hFhdD8k"
-  },
-  {
-    title: "Benche Thakar Gaan",
-    artist: "Rupam & Anupam (Autograph)",
-    videoId: "JPp4Urgfs0U"
-  }
-];
+// --- 2. Playlists Categories ---
+const allPlaylists = {
+  bengali: [
+    {
+      title: "O Je Mane Na Mana",
+      artist: "Arnob & Sunidhi Nayak",
+      videoId: "wC3FrA70jwI"
+    },
+    {
+      title: "Ekhon Onek Raat",
+      artist: "Anupam Roy (Hemlock Society)",
+      videoId: "l5Schfa_3Wk"
+    },
+    {
+      title: "Amake Amar Moto Thakte Dao",
+      artist: "Anupam Roy (Autograph)",
+      videoId: "vYsfSlEBh5Y"
+    },
+    {
+      title: "Mayabono Biharini",
+      artist: "Somlata (Bedroom)",
+      videoId: "1aGwOBgyWTo"
+    },
+    {
+      title: "Boba Tunnel",
+      artist: "Anupam Roy (Chotushkone)",
+      videoId: "GeX_hFhdD8k"
+    },
+    {
+      title: "Benche Thakar Gaan",
+      artist: "Rupam & Anupam (Autograph)",
+      videoId: "JPp4Urgfs0U"
+    }
+  ],
+  ritviz: [
+    {
+      title: "Chandamama",
+      artist: "Ritviz (Mimmi)",
+      videoId: "mWxZEtHNOSs"
+    },
+    {
+      title: "Barso",
+      artist: "Ritviz (Ved)",
+      videoId: "cqOcnONQB4M"
+    },
+    {
+      title: "Sage",
+      artist: "Ritviz (Ved)",
+      videoId: "bFp0sX1lswk"
+    },
+    {
+      title: "Udd Gaye",
+      artist: "Ritviz",
+      videoId: "3jDQKquMXP4"
+    },
+    {
+      title: "Baaraat",
+      artist: "Ritviz & Nucleya",
+      videoId: "0jyeL0fmHRU"
+    },
+    {
+      title: "Jeet 2.0",
+      artist: "Ritviz",
+      videoId: "z26Sn6gRn98"
+    }
+  ]
+};
+
+let activeCategory = 'bengali';
+let activePlaylist = allPlaylists[activeCategory];
+let currentTrackIndex = 0;
 
 let player;
 let isPlayerReady = false;
-let currentTrackIndex = 0;
 let isPlaying = false;
 let isBuffering = false;
 let currentVolume = 80;
@@ -64,7 +101,7 @@ window.onYouTubeIframeAPIReady = function() {
   player = new YT.Player('yt-player', {
     height: '200',
     width: '200',
-    videoId: playlist[currentTrackIndex].videoId,
+    videoId: activePlaylist[currentTrackIndex].videoId,
     playerVars: {
       autoplay: 0,
       controls: 0,
@@ -83,8 +120,8 @@ window.onYouTubeIframeAPIReady = function() {
 function onPlayerReady() {
   isPlayerReady = true;
   player.setVolume(currentVolume);
-  player.cueVideoById(playlist[currentTrackIndex].videoId);
-  updateTrackUI(currentTrackIndex);
+  player.cueVideoById(activePlaylist[currentTrackIndex].videoId);
+  updateTrackUI();
   renderPlaylistModal();
 }
 
@@ -106,25 +143,29 @@ function onPlayerStateChange(event) {
   renderPlaylistModal();
 }
 
-function updateTrackUI(index) {
-  const track = playlist[index];
+function updateTrackUI() {
+  const track = activePlaylist[currentTrackIndex];
   if (trackTitle) trackTitle.textContent = track.title;
   if (trackArtist) trackArtist.textContent = track.artist;
   if (trackCover) {
-    // High-quality YouTube thumbnail
     trackCover.src = `https://img.youtube.com/vi/${track.videoId}/mqdefault.jpg`;
   }
   renderPlaylistModal();
 }
 
-function loadAndPlayTrack(index) {
+function loadAndPlayTrack(index, category = null) {
+  if (category && category !== activeCategory) {
+    activeCategory = category;
+    activePlaylist = allPlaylists[activeCategory];
+    updateCategoryTabsUI();
+  }
   currentTrackIndex = index;
-  updateTrackUI(currentTrackIndex);
+  updateTrackUI();
   if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
   
   if (isPlayerReady && player) {
     player.loadVideoById({
-      videoId: playlist[currentTrackIndex].videoId,
+      videoId: activePlaylist[currentTrackIndex].videoId,
       startSeconds: 0,
       suggestedQuality: 'small'
     });
@@ -133,12 +174,12 @@ function loadAndPlayTrack(index) {
 }
 
 function nextTrack() {
-  const nextIndex = (currentTrackIndex + 1) % playlist.length;
+  const nextIndex = (currentTrackIndex + 1) % activePlaylist.length;
   loadAndPlayTrack(nextIndex);
 }
 
 function prevTrack() {
-  const prevIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+  const prevIndex = (currentTrackIndex - 1 + activePlaylist.length) % activePlaylist.length;
   loadAndPlayTrack(prevIndex);
 }
 
@@ -200,14 +241,46 @@ function updateVolumeIcon(vol) {
   }
 }
 
-// --- 3. Modal Popup Controls ---
+// --- 3. Modal & Tab Controls ---
 const openPlaylistBtn = document.getElementById('open-playlist-btn');
 const closeModalBtn = document.getElementById('close-modal-btn');
 const playlistModal = document.getElementById('playlist-modal');
 const playlistItemsContainer = document.getElementById('playlist-items-container');
+const tabBengali = document.getElementById('tab-bengali');
+const tabRitviz = document.getElementById('tab-ritviz');
+
+let viewingCategory = 'bengali';
+
+function updateCategoryTabsUI() {
+  if (viewingCategory === 'bengali') {
+    tabBengali.className = "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-3.5 py-1.5 rounded-xl transition";
+    tabRitviz.className = "text-slate-400 hover:text-slate-200 border border-transparent px-3.5 py-1.5 rounded-xl transition";
+  } else {
+    tabRitviz.className = "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-3.5 py-1.5 rounded-xl transition";
+    tabBengali.className = "text-slate-400 hover:text-slate-200 border border-transparent px-3.5 py-1.5 rounded-xl transition";
+  }
+}
+
+if (tabBengali) {
+  tabBengali.addEventListener('click', () => {
+    viewingCategory = 'bengali';
+    updateCategoryTabsUI();
+    renderPlaylistModal();
+  });
+}
+
+if (tabRitviz) {
+  tabRitviz.addEventListener('click', () => {
+    viewingCategory = 'ritviz';
+    updateCategoryTabsUI();
+    renderPlaylistModal();
+  });
+}
 
 if (openPlaylistBtn && playlistModal) {
   openPlaylistBtn.addEventListener('click', () => {
+    viewingCategory = activeCategory;
+    updateCategoryTabsUI();
     playlistModal.classList.remove('hidden');
     renderPlaylistModal();
   });
@@ -231,8 +304,10 @@ function renderPlaylistModal() {
   if (!playlistItemsContainer) return;
   playlistItemsContainer.innerHTML = '';
 
-  playlist.forEach((track, idx) => {
-    const isCurrent = idx === currentTrackIndex;
+  const listToDisplay = allPlaylists[viewingCategory];
+
+  listToDisplay.forEach((track, idx) => {
+    const isCurrent = viewingCategory === activeCategory && idx === currentTrackIndex;
     const num = (idx + 1).toString().padStart(2, '0');
     const thumbnailUrl = `https://img.youtube.com/vi/${track.videoId}/mqdefault.jpg`;
 
@@ -254,7 +329,7 @@ function renderPlaylistModal() {
     `;
 
     item.addEventListener('click', () => {
-      loadAndPlayTrack(idx);
+      loadAndPlayTrack(idx, viewingCategory);
       playlistModal.classList.add('hidden');
     });
 
@@ -262,7 +337,7 @@ function renderPlaylistModal() {
   });
 }
 
-// Fullscreen Toggle
+// Fullscreen
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 if (fullscreenBtn) {
   fullscreenBtn.addEventListener('click', () => {
@@ -274,5 +349,5 @@ if (fullscreenBtn) {
   });
 }
 
-// Set Initial Display
-updateTrackUI(currentTrackIndex);
+// Initial UI Setup
+updateTrackUI();
