@@ -8,43 +8,45 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// --- 2. Multi-Song Playlist Engine ---
+// --- 2. YouTube Music Playlist Engine ---
 const playlist = [
   {
     title: "O Je Mane Na Mana",
     artist: "Arnob & Sunidhi Nayak",
-    src: "https://music.youtube.com/watch?v=wC3FrA70jwI"
+    videoId: "wC3FrA70jwI"
   },
   {
     title: "Ekhon Onek Raat",
     artist: "Anupam Roy (Hemlock Society)",
-    src: "audio/Ekhon Onek Raat (এখন অনেক রাত ) Hemlock Society Anupam Roy Srijit Parambrata Koel SVF - 320.MP3"
+    videoId: "l5Schfa_3Wk"
   },
   {
     title: "Amake Amar Moto Thakte Dao",
     artist: "Anupam Roy (Autograph)",
-    src: "https://music.youtube.com/watch?v=vYsfSlEBh5Y"
+    videoId: "vYsfSlEBh5Y"
   },
   {
     title: "Mayabono Biharini",
     artist: "Somlata (Bedroom)",
-    src: "https://music.youtube.com/watch?v=1aGwOBgyWTo"
+    videoId: "1aGwOBgyWTo"
   },
   {
     title: "Boba Tunnel",
     artist: "Anupam Roy (Chotushkone)",
-    src: "https://music.youtube.com/watch?v=GeX_hFhdD8k"
+    videoId: "GeX_hFhdD8k"
   },
   {
     title: "Benche Thakar Gaan",
     artist: "Rupam & Anupam (Autograph)",
-    src: "https://music.youtube.com/watch?v=JPp4Urgfs0U"
+    videoId: "JPp4Urgfs0U"
   }
 ];
 
+let player;
+let isPlayerReady = false;
 let currentTrackIndex = 0;
-const audio = document.getElementById('main-audio');
-audio.volume = 0.8;
+let isPlaying = false;
+let currentVolume = 80;
 
 const playBtn = document.getElementById('play-btn');
 const prevBtn = document.getElementById('prev-btn');
@@ -55,101 +57,118 @@ const volumeSlider = document.getElementById('volume-slider');
 const volumeBtn = document.getElementById('volume-btn');
 const volumeIcon = document.getElementById('volume-icon');
 
-let lastVolume = 0.8;
+// Initialize YouTube Player
+window.onYouTubeIframeAPIReady = function() {
+  player = new YT.Player('yt-player', {
+    height: '0',
+    width: '0',
+    videoId: playlist[currentTrackIndex].videoId,
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      playsinline: 1
+    },
+    events: {
+      onReady: onPlayerReady,
+      onStateChange: onPlayerStateChange
+    }
+  });
+};
 
-function loadTrack(index) {
+function onPlayerReady(event) {
+  isPlayerReady = true;
+  player.setVolume(currentVolume);
+  updateTrackUI(currentTrackIndex);
+}
+
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.PLAYING) {
+    isPlaying = true;
+    if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+  } else if (event.data === YT.PlayerState.PAUSED) {
+    isPlaying = false;
+    if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
+  } else if (event.data === YT.PlayerState.ENDED) {
+    // Automatically play next song
+    nextTrack();
+  }
+}
+
+function updateTrackUI(index) {
   const track = playlist[index];
   if (trackTitle) trackTitle.textContent = track.title;
   if (trackArtist) trackArtist.textContent = track.artist;
-  
-  // Cleanly encode path for web routing
-  audio.src = encodeURI(track.src);
-  audio.load();
 }
 
-function playTrack() {
-  audio.play()
-    .then(() => {
-      if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-    })
-    .catch((err) => {
-      console.error("Playback error:", err);
-      if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
-    });
+function loadAndPlayTrack(index) {
+  currentTrackIndex = index;
+  updateTrackUI(currentTrackIndex);
+  if (isPlayerReady && player) {
+    player.loadVideoById(playlist[currentTrackIndex].videoId);
+    player.playVideo();
+  }
 }
 
-function pauseTrack() {
-  audio.pause();
-  if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
+function nextTrack() {
+  const nextIndex = (currentTrackIndex + 1) % playlist.length;
+  loadAndPlayTrack(nextIndex);
 }
 
-// Play / Pause Toggle
+function prevTrack() {
+  const prevIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+  loadAndPlayTrack(prevIndex);
+}
+
+// Button Events
 if (playBtn) {
   playBtn.addEventListener('click', () => {
-    if (audio.paused) {
-      playTrack();
+    if (!isPlayerReady) return;
+    if (isPlaying) {
+      player.pauseVideo();
     } else {
-      pauseTrack();
+      player.playVideo();
     }
   });
 }
 
-// Next / Previous Buttons
 if (nextBtn) {
-  nextBtn.addEventListener('click', () => {
-    const wasPlaying = !audio.paused;
-    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-    loadTrack(currentTrackIndex);
-    if (wasPlaying) playTrack();
-  });
+  nextBtn.addEventListener('click', nextTrack);
 }
 
 if (prevBtn) {
-  prevBtn.addEventListener('click', () => {
-    const wasPlaying = !audio.paused;
-    currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-    loadTrack(currentTrackIndex);
-    if (wasPlaying) playTrack();
-  });
+  prevBtn.addEventListener('click', prevTrack);
 }
 
-// Auto-play Next Song when current ends
-audio.addEventListener('ended', () => {
-  currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-  loadTrack(currentTrackIndex);
-  playTrack();
-});
-
-// Update play button state on audio events
-audio.addEventListener('play', () => {
-  if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-});
-
-audio.addEventListener('pause', () => {
-  if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
-});
-
-// Volume Slider
+// Volume Controls
 if (volumeSlider) {
   volumeSlider.addEventListener('input', (e) => {
-    const val = parseFloat(e.target.value);
-    audio.volume = val;
+    const val = parseInt(e.target.value);
+    currentVolume = val;
+    if (isPlayerReady && player) {
+      player.setVolume(val);
+      if (val === 0) {
+        player.mute();
+      } else {
+        player.unMute();
+      }
+    }
     updateVolumeIcon(val);
   });
 }
 
-// Mute / Unmute
 if (volumeBtn) {
   volumeBtn.addEventListener('click', () => {
-    if (audio.volume > 0) {
-      lastVolume = audio.volume;
-      audio.volume = 0;
+    if (!isPlayerReady || !player) return;
+    if (player.isMuted() || player.getVolume() === 0) {
+      player.unMute();
+      const restoreVol = currentVolume || 80;
+      player.setVolume(restoreVol);
+      if (volumeSlider) volumeSlider.value = restoreVol;
+      updateVolumeIcon(restoreVol);
+    } else {
+      player.mute();
       if (volumeSlider) volumeSlider.value = 0;
       updateVolumeIcon(0);
-    } else {
-      audio.volume = lastVolume || 0.8;
-      if (volumeSlider) volumeSlider.value = audio.volume;
-      updateVolumeIcon(audio.volume);
     }
   });
 }
@@ -158,15 +177,15 @@ function updateVolumeIcon(vol) {
   if (!volumeIcon) return;
   if (vol === 0) {
     volumeIcon.className = "fa-solid fa-volume-xmark text-slate-500";
-  } else if (vol < 0.5) {
+  } else if (vol < 50) {
     volumeIcon.className = "fa-solid fa-volume-low text-cyan-300";
   } else {
     volumeIcon.className = "fa-solid fa-volume-high text-cyan-300";
   }
 }
 
-// Initialize First Track
-loadTrack(currentTrackIndex);
+// Initial UI setup before YouTube API triggers
+updateTrackUI(currentTrackIndex);
 
 // --- 3. Fullscreen Toggle ---
 const fullscreenBtn = document.getElementById('fullscreen-btn');
