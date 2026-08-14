@@ -8,7 +8,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// --- 2. YouTube Music Playlist Engine ---
+// --- 2. Multi-Song Playlist Data ---
 const playlist = [
   {
     title: "O Je Mane Na Mana",
@@ -57,11 +57,11 @@ const volumeSlider = document.getElementById('volume-slider');
 const volumeBtn = document.getElementById('volume-btn');
 const volumeIcon = document.getElementById('volume-icon');
 
-// Initialize YouTube Player
+// Initialize YouTube IFrame API
 window.onYouTubeIframeAPIReady = function() {
   player = new YT.Player('yt-player', {
-    height: '0',
-    width: '0',
+    height: '200',
+    width: '200',
     videoId: playlist[currentTrackIndex].videoId,
     playerVars: {
       autoplay: 0,
@@ -75,7 +75,7 @@ window.onYouTubeIframeAPIReady = function() {
   });
 };
 
-function onPlayerReady(event) {
+function onPlayerReady() {
   isPlayerReady = true;
   player.setVolume(currentVolume);
   updateTrackUI(currentTrackIndex);
@@ -89,15 +89,16 @@ function onPlayerStateChange(event) {
     isPlaying = false;
     if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
   } else if (event.data === YT.PlayerState.ENDED) {
-    // Automatically play next song
     nextTrack();
   }
+  renderPlaylistModal();
 }
 
 function updateTrackUI(index) {
   const track = playlist[index];
   if (trackTitle) trackTitle.textContent = track.title;
   if (trackArtist) trackArtist.textContent = track.artist;
+  renderPlaylistModal();
 }
 
 function loadAndPlayTrack(index) {
@@ -119,10 +120,10 @@ function prevTrack() {
   loadAndPlayTrack(prevIndex);
 }
 
-// Button Events
+// Play / Pause Click
 if (playBtn) {
   playBtn.addEventListener('click', () => {
-    if (!isPlayerReady) return;
+    if (!isPlayerReady || !player) return;
     if (isPlaying) {
       player.pauseVideo();
     } else {
@@ -131,26 +132,18 @@ if (playBtn) {
   });
 }
 
-if (nextBtn) {
-  nextBtn.addEventListener('click', nextTrack);
-}
+if (nextBtn) nextBtn.addEventListener('click', nextTrack);
+if (prevBtn) prevBtn.addEventListener('click', prevTrack);
 
-if (prevBtn) {
-  prevBtn.addEventListener('click', prevTrack);
-}
-
-// Volume Controls
+// Volume Handlers
 if (volumeSlider) {
   volumeSlider.addEventListener('input', (e) => {
     const val = parseInt(e.target.value);
     currentVolume = val;
     if (isPlayerReady && player) {
       player.setVolume(val);
-      if (val === 0) {
-        player.mute();
-      } else {
-        player.unMute();
-      }
+      if (val === 0) player.mute();
+      else player.unMute();
     }
     updateVolumeIcon(val);
   });
@@ -184,19 +177,77 @@ function updateVolumeIcon(vol) {
   }
 }
 
-// Initial UI setup before YouTube API triggers
-updateTrackUI(currentTrackIndex);
+// --- 3. Modal Popup Controls ---
+const openPlaylistBtn = document.getElementById('open-playlist-btn');
+const closeModalBtn = document.getElementById('close-modal-btn');
+const playlistModal = document.getElementById('playlist-modal');
+const playlistItemsContainer = document.getElementById('playlist-items-container');
 
-// --- 3. Fullscreen Toggle ---
+if (openPlaylistBtn && playlistModal) {
+  openPlaylistBtn.addEventListener('click', () => {
+    playlistModal.classList.remove('hidden');
+    renderPlaylistModal();
+  });
+}
+
+if (closeModalBtn && playlistModal) {
+  closeModalBtn.addEventListener('click', () => {
+    playlistModal.classList.add('hidden');
+  });
+}
+
+if (playlistModal) {
+  playlistModal.addEventListener('click', (e) => {
+    if (e.target === playlistModal) {
+      playlistModal.classList.add('hidden');
+    }
+  });
+}
+
+function renderPlaylistModal() {
+  if (!playlistItemsContainer) return;
+  playlistItemsContainer.innerHTML = '';
+
+  playlist.forEach((track, idx) => {
+    const isCurrent = idx === currentTrackIndex;
+    const num = (idx + 1).toString().padStart(2, '0');
+
+    const item = document.createElement('div');
+    item.className = `flex items-center space-x-3 p-2.5 rounded-2xl cursor-pointer transition ${
+      isCurrent ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300' : 'hover:bg-slate-800/80 text-slate-300'
+    }`;
+
+    item.innerHTML = `
+      <span class="text-xs font-semibold ${isCurrent ? 'text-cyan-300' : 'text-slate-500'} w-5 text-center">${num}</span>
+      <div class="w-8 h-8 rounded-lg bg-indigo-600/40 flex items-center justify-center text-xs shrink-0">
+        <i class="fa-solid ${isCurrent && isPlaying ? 'fa-volume-high animate-pulse text-cyan-300' : 'fa-music'}"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <h5 class="text-xs font-semibold truncate ${isCurrent ? 'text-cyan-200' : 'text-slate-100'}">${track.title}</h5>
+        <p class="text-[10px] text-slate-400 truncate">${track.artist}</p>
+      </div>
+    `;
+
+    item.addEventListener('click', () => {
+      loadAndPlayTrack(idx);
+      playlistModal.classList.add('hidden');
+    });
+
+    playlistItemsContainer.appendChild(item);
+  });
+}
+
+// Fullscreen
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 if (fullscreenBtn) {
   fullscreenBtn.addEventListener('click', () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(err => console.log(err));
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
+      if (document.exitFullscreen) document.exitFullscreen();
     }
   });
 }
+
+// Set Initial Display
+updateTrackUI(currentTrackIndex);
