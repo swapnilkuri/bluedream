@@ -13,38 +13,37 @@ const playlist = [
   {
     title: "O Je Mane Na Mana",
     artist: "Arnob & Sunidhi Nayak",
-    src: encodeURI("audio/O Je Mane Na Mana (ও যে মানে না মানা) Arnob Sunidhi Nayak Best Of Tagore - 256.MP3")
+    src: "audio/O Je Mane Na Mana (ও যে মানে না মানা) Arnob Sunidhi Nayak Best Of Tagore - 256.MP3"
   },
   {
     title: "Ekhon Onek Raat",
     artist: "Anupam Roy (Hemlock Society)",
-    src: encodeURI("audio/Ekhon Onek Raat (এখন অনেক রাত ) Hemlock Society Anupam Roy Srijit Parambrata Koel SVF - 320.MP3")
+    src: "audio/Ekhon Onek Raat (এখন অনেক রাত ) Hemlock Society Anupam Roy Srijit Parambrata Koel SVF - 320.MP3"
   },
   {
     title: "Amake Amar Moto Thakte Dao",
     artist: "Anupam Roy (Autograph)",
-    src: encodeURI("audio/Amake Amar Moto Thakte Dao Autograph Prosenjit Chatterjee Anupam Roy Srijit Mukherji SVF - 256.MP3")
+    src: "audio/Amake Amar Moto Thakte Dao Autograph Prosenjit Chatterjee Anupam Roy Srijit Mukherji SVF - 256.MP3"
   },
   {
     title: "Mayabono Biharini",
     artist: "Somlata (Bedroom)",
-    src: encodeURI("audio/Mayabono Biharini from BEDROOM by Somlata - 256.MP3")
+    src: "audio/Mayabono Biharini from BEDROOM by Somlata - 256.MP3"
   },
   {
     title: "Boba Tunnel",
     artist: "Anupam Roy (Chotushkone)",
-    src: encodeURI("audio/Official Boba Tunnel Video Song Bengali Film Chotushkone Anupam Roy - 256.MP3")
+    src: "audio/Official Boba Tunnel Video Song Bengali Film Chotushkone Anupam Roy - 256.MP3"
   },
   {
     title: "Benche Thakar Gaan",
     artist: "Rupam & Anupam (Autograph)",
-    src: encodeURI("audio/Benche Thakar Gaan (বেঁচে থাকার গান) Autograph Video Song Prosenjit Anupam Rupam Srijit - 320.MP3")
+    src: "audio/Benche Thakar Gaan (বেঁচে থাকার গান) Autograph Video Song Prosenjit Anupam Rupam Srijit - 320.MP3"
   }
 ];
 
 let currentTrackIndex = 0;
-let isPlaying = false;
-const audio = new Audio();
+const audio = document.getElementById('main-audio');
 audio.volume = 0.8;
 
 const playBtn = document.getElementById('play-btn');
@@ -62,36 +61,35 @@ function loadTrack(index) {
   const track = playlist[index];
   if (trackTitle) trackTitle.textContent = track.title;
   if (trackArtist) trackArtist.textContent = track.artist;
-  audio.src = track.src;
+  
+  // Cleanly encode path for web routing
+  audio.src = encodeURI(track.src);
   audio.load();
 }
 
 function playTrack() {
   audio.play()
     .then(() => {
-      isPlaying = true;
       if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
     })
     .catch((err) => {
       console.error("Playback error:", err);
-      isPlaying = false;
       if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
     });
 }
 
 function pauseTrack() {
   audio.pause();
-  isPlaying = false;
   if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
 }
 
 // Play / Pause Toggle
 if (playBtn) {
   playBtn.addEventListener('click', () => {
-    if (isPlaying) {
-      pauseTrack();
-    } else {
+    if (audio.paused) {
       playTrack();
+    } else {
+      pauseTrack();
     }
   });
 }
@@ -99,25 +97,36 @@ if (playBtn) {
 // Next / Previous Buttons
 if (nextBtn) {
   nextBtn.addEventListener('click', () => {
+    const wasPlaying = !audio.paused;
     currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
     loadTrack(currentTrackIndex);
-    if (isPlaying) playTrack();
+    if (wasPlaying) playTrack();
   });
 }
 
 if (prevBtn) {
   prevBtn.addEventListener('click', () => {
+    const wasPlaying = !audio.paused;
     currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
     loadTrack(currentTrackIndex);
-    if (isPlaying) playTrack();
+    if (wasPlaying) playTrack();
   });
 }
 
-// Auto-advance track when current finishes
+// Auto-play Next Song when current ends
 audio.addEventListener('ended', () => {
   currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
   loadTrack(currentTrackIndex);
   playTrack();
+});
+
+// Update play button state on audio events
+audio.addEventListener('play', () => {
+  if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+});
+
+audio.addEventListener('pause', () => {
+  if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
 });
 
 // Volume Slider
@@ -129,7 +138,7 @@ if (volumeSlider) {
   });
 }
 
-// Mute / Unmute Toggle
+// Mute / Unmute
 if (volumeBtn) {
   volumeBtn.addEventListener('click', () => {
     if (audio.volume > 0) {
@@ -156,7 +165,7 @@ function updateVolumeIcon(vol) {
   }
 }
 
-// Load First Track on startup
+// Initialize First Track
 loadTrack(currentTrackIndex);
 
 // --- 3. Fullscreen Toggle ---
