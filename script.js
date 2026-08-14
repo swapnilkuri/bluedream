@@ -54,11 +54,12 @@ const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 const trackTitle = document.getElementById('track-title');
 const trackArtist = document.getElementById('track-artist');
+const trackCover = document.getElementById('track-cover');
 const volumeSlider = document.getElementById('volume-slider');
 const volumeBtn = document.getElementById('volume-btn');
 const volumeIcon = document.getElementById('volume-icon');
 
-// Initialize YouTube IFrame with Pre-buffering flags
+// Initialize YouTube IFrame API
 window.onYouTubeIframeAPIReady = function() {
   player = new YT.Player('yt-player', {
     height: '200',
@@ -82,7 +83,6 @@ window.onYouTubeIframeAPIReady = function() {
 function onPlayerReady() {
   isPlayerReady = true;
   player.setVolume(currentVolume);
-  // Pre-cue video so audio chunks are fetched immediately
   player.cueVideoById(playlist[currentTrackIndex].videoId);
   updateTrackUI(currentTrackIndex);
   renderPlaylistModal();
@@ -91,9 +91,7 @@ function onPlayerReady() {
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.BUFFERING) {
     isBuffering = true;
-    if (playBtn) {
-      playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
-    }
+    if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
   } else if (event.data === YT.PlayerState.PLAYING) {
     isPlaying = true;
     isBuffering = false;
@@ -112,6 +110,10 @@ function updateTrackUI(index) {
   const track = playlist[index];
   if (trackTitle) trackTitle.textContent = track.title;
   if (trackArtist) trackArtist.textContent = track.artist;
+  if (trackCover) {
+    // High-quality YouTube thumbnail
+    trackCover.src = `https://img.youtube.com/vi/${track.videoId}/mqdefault.jpg`;
+  }
   renderPlaylistModal();
 }
 
@@ -124,7 +126,7 @@ function loadAndPlayTrack(index) {
     player.loadVideoById({
       videoId: playlist[currentTrackIndex].videoId,
       startSeconds: 0,
-      suggestedQuality: 'small' // Audio-optimized low bandwidth stream for faster loading
+      suggestedQuality: 'small'
     });
     player.playVideo();
   }
@@ -156,7 +158,7 @@ if (playBtn) {
 if (nextBtn) nextBtn.addEventListener('click', nextTrack);
 if (prevBtn) prevBtn.addEventListener('click', prevTrack);
 
-// Volume Handlers
+// Volume Controls
 if (volumeSlider) {
   volumeSlider.addEventListener('input', (e) => {
     const val = parseInt(e.target.value);
@@ -232,6 +234,7 @@ function renderPlaylistModal() {
   playlist.forEach((track, idx) => {
     const isCurrent = idx === currentTrackIndex;
     const num = (idx + 1).toString().padStart(2, '0');
+    const thumbnailUrl = `https://img.youtube.com/vi/${track.videoId}/mqdefault.jpg`;
 
     const item = document.createElement('div');
     item.className = `flex items-center space-x-3 p-2.5 rounded-2xl cursor-pointer transition ${
@@ -240,8 +243,9 @@ function renderPlaylistModal() {
 
     item.innerHTML = `
       <span class="text-xs font-semibold ${isCurrent ? 'text-cyan-300' : 'text-slate-500'} w-5 text-center">${num}</span>
-      <div class="w-8 h-8 rounded-lg bg-indigo-600/40 flex items-center justify-center text-xs shrink-0">
-        <i class="fa-solid ${isCurrent && isPlaying ? 'fa-volume-high animate-pulse text-cyan-300' : isCurrent && isBuffering ? 'fa-spinner fa-spin text-cyan-300' : 'fa-music'}"></i>
+      <div class="relative w-10 h-10 rounded-xl overflow-hidden bg-slate-800 border border-slate-700/50 shrink-0">
+        <img src="${thumbnailUrl}" alt="${track.title}" class="w-full h-full object-cover">
+        ${isCurrent && isPlaying ? '<div class="absolute inset-0 bg-black/40 flex items-center justify-center"><i class="fa-solid fa-volume-high text-xs text-cyan-300 animate-pulse"></i></div>' : ''}
       </div>
       <div class="flex-1 min-w-0">
         <h5 class="text-xs font-semibold truncate ${isCurrent ? 'text-cyan-200' : 'text-slate-100'}">${track.title}</h5>
@@ -258,7 +262,7 @@ function renderPlaylistModal() {
   });
 }
 
-// Fullscreen
+// Fullscreen Toggle
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 if (fullscreenBtn) {
   fullscreenBtn.addEventListener('click', () => {
