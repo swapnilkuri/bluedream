@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Blue Dream</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -12,7 +12,7 @@
   <!-- YouTube IFrame API -->
   <script src="https://www.youtube.com/iframe_api"></script>
 </head>
-<body class="h-screen w-screen overflow-hidden bg-slate-950 text-white relative font-sans">
+<body class="h-[100dvh] w-screen overflow-hidden bg-slate-950 text-white relative font-sans select-none flex flex-col justify-between">
 
   <!-- Active Hidden YouTube Player Container -->
   <div style="position: absolute; bottom: 0; left: 0; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -10;">
@@ -21,17 +21,17 @@
 
   <!-- Background Overlay Image / Gradient -->
   <div class="absolute inset-0 bg-cover bg-center z-0 opacity-80" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920&auto=format&fit=crop');">
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/30 to-slate-950/90"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/40 to-slate-950/95"></div>
   </div>
 
   <!-- Top Status Bar -->
-  <header class="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20 text-xs sm:text-sm font-medium tracking-wide">
-    <div class="flex items-center space-x-2 bg-slate-900/60 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/50">
+  <header class="relative w-full p-4 sm:p-6 flex justify-between items-center z-20 text-xs sm:text-sm font-medium tracking-wide">
+    <div class="flex items-center space-x-2 bg-slate-900/70 backdrop-blur-md px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-700/50 shadow-md">
       <span id="current-time">00:00 AM</span>
     </div>
 
     <!-- Center Badges -->
-    <div class="flex items-center bg-slate-900/60 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/50">
+    <div class="flex items-center bg-slate-900/70 backdrop-blur-md px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-700/50 shadow-md">
       <span class="inline-flex items-center text-emerald-400">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-2"></span>
         <span id="live-counter">1 online</span>
@@ -39,26 +39,26 @@
     </div>
 
     <!-- Right Utility Icons -->
-    <div class="flex items-center space-x-3 bg-slate-900/60 backdrop-blur-md px-3 py-2 rounded-full border border-slate-700/50">
-      <button id="fullscreen-btn" class="hover:text-cyan-400 transition" title="Toggle Fullscreen">
+    <div class="flex items-center space-x-2 bg-slate-900/70 backdrop-blur-md px-3 py-1.5 sm:px-3 sm:py-2 rounded-full border border-slate-700/50 shadow-md">
+      <button id="fullscreen-btn" class="hover:text-cyan-400 transition p-0.5" title="Toggle Fullscreen">
         <i class="fa-solid fa-expand"></i>
       </button>
     </div>
   </header>
 
   <!-- Center Typography Title -->
-  <main class="absolute inset-0 flex flex-col items-center justify-center z-10 text-center px-4">
-    <h1 class="text-5xl sm:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-100 to-indigo-300 drop-shadow-lg">
+  <main class="relative z-10 text-center px-4 flex flex-col items-center justify-center -mt-6">
+    <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-100 to-indigo-300 drop-shadow-lg">
       BLUE DREAM
     </h1>
-    <p class="mt-4 text-slate-300 text-sm sm:text-base max-w-md font-light">
-     Everything is blue like the sky.
+    <p class="mt-2 sm:mt-3 text-slate-300 text-xs sm:text-base max-w-sm sm:max-w-md font-light tracking-wide">
+      Everything is blue like the sky.
     </p>
   </main>
 
   <!-- Playlist Modal -->
-  <div id="playlist-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md px-4">
-    <div class="bg-slate-900/95 border border-slate-700/70 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl backdrop-blur-xl flex flex-col max-h-[80vh]">
+  <div id="playlist-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-md p-0 sm:p-4">
+    <div class="bg-slate-900/95 border border-slate-700/70 rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl backdrop-blur-xl flex flex-col max-h-[75vh] sm:max-h-[80vh]">
       
       <!-- Modal Header -->
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -82,44 +82,39 @@
   </div>
 
   <!-- Bottom Navigation & Controls Bar -->
-  <footer class="absolute bottom-6 left-0 right-0 z-20 px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+  <footer class="relative z-20 px-4 sm:px-6 pb-6 pt-2 flex flex-col items-center gap-3">
     
-    <!-- Bottom Left: Copyright Badge -->
-    <div class="bg-slate-900/60 backdrop-blur-md border border-slate-700/50 px-5 py-2.5 rounded-2xl text-xs text-slate-300 font-medium tracking-wider shadow-lg">
-      © 2026 Detx Gaming
-    </div>
-
-    <!-- Bottom Center: Audio Player Widget Stack -->
-    <div class="flex flex-col items-center max-w-lg w-full">
+    <!-- Audio Player Stack -->
+    <div class="flex flex-col items-center w-full max-w-md">
       
       <!-- Pill Button to Open Playlist -->
-      <button id="open-playlist-btn" class="bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-600/60 text-[11px] font-bold tracking-wider uppercase px-4 py-1.5 rounded-t-xl transition flex items-center space-x-2 shadow-md cursor-pointer -mb-[1px]">
+      <button id="open-playlist-btn" class="bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-600/60 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase px-4 py-1.5 rounded-t-xl transition flex items-center space-x-2 shadow-md cursor-pointer -mb-[1px]">
         <span>RADIO PLAYLIST</span>
         <i class="fa-solid fa-chevron-up text-[9px]"></i>
       </button>
 
       <!-- Main Player Widget Bar -->
-      <div class="bg-slate-900/80 backdrop-blur-lg border border-slate-700/60 rounded-2xl p-3 sm:px-5 sm:py-3 flex items-center space-x-3 sm:space-x-4 shadow-2xl w-full">
+      <div class="bg-slate-900/85 backdrop-blur-xl border border-slate-700/60 rounded-2xl p-2.5 sm:p-3 flex items-center justify-between space-x-2.5 sm:space-x-3 shadow-2xl w-full">
         
         <!-- Track Thumbnail Image -->
-        <div class="w-11 h-11 rounded-xl bg-slate-800 border border-slate-700/50 overflow-hidden shrink-0 shadow-md">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 border border-slate-700/50 overflow-hidden shrink-0 shadow-md">
           <img id="track-cover" src="" alt="Album Art" class="w-full h-full object-cover">
         </div>
 
         <!-- Track Info -->
-        <div class="flex-1 min-w-0">
+        <div class="flex-1 min-w-0 pr-1">
           <h4 id="track-title" class="text-xs font-semibold text-slate-100 truncate">Loading...</h4>
           <p id="track-artist" class="text-[10px] text-slate-400 truncate">Loading...</p>
         </div>
 
         <!-- Playback Controls -->
-        <div class="flex items-center space-x-1.5 shrink-0">
+        <div class="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
           <button id="prev-btn" class="w-8 h-8 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition">
             <i class="fa-solid fa-backward-step text-xs"></i>
           </button>
 
-          <button id="play-btn" class="w-10 h-10 rounded-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center justify-center font-bold transition shadow-md">
-            <i class="fa-solid fa-play ml-0.5"></i>
+          <button id="play-btn" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center justify-center font-bold transition shadow-md">
+            <i class="fa-solid fa-play ml-0.5 text-xs sm:text-sm"></i>
           </button>
 
           <button id="next-btn" class="w-8 h-8 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition">
@@ -127,31 +122,33 @@
           </button>
         </div>
 
-        <!-- Volume Controls -->
-        <div class="hidden sm:flex items-center space-x-2 border-l border-slate-700/60 pl-3">
+        <!-- Volume Controls (Desktop Only) -->
+        <div class="hidden sm:flex items-center space-x-2 border-l border-slate-700/60 pl-3 shrink-0">
           <button id="volume-btn" class="text-slate-400 hover:text-cyan-300 transition text-sm">
             <i class="fa-solid fa-volume-high" id="volume-icon"></i>
           </button>
           <input type="range" id="volume-slider" min="0" max="100" step="1" value="80" 
-                 class="w-16 sm:w-20 accent-cyan-400 cursor-pointer h-1.5 bg-slate-700 rounded-lg">
+                 class="w-16 md:w-20 accent-cyan-400 cursor-pointer h-1.5 bg-slate-700 rounded-lg">
         </div>
 
       </div>
     </div>
 
-    <!-- Bottom Right: Social Link Buttons -->
-    <div class="flex items-center space-x-3">
-      <a href="https://www.youtube.com/@detxislive" target="_blank" rel="noopener noreferrer" 
-         class="bg-slate-900/60 backdrop-blur-md border border-slate-700/50 px-4 py-2.5 rounded-2xl text-xs text-slate-300 hover:text-red-400 hover:border-red-500/50 transition flex items-center space-x-2 font-medium shadow-lg">
-        <i class="fa-brands fa-youtube text-red-500 text-sm"></i>
-        <span>YouTube</span>
-      </a>
-
-      <a href="https://www.instagram.com/detxgaming/" target="_blank" rel="noopener noreferrer" 
-         class="bg-slate-900/60 backdrop-blur-md border border-slate-700/50 px-4 py-2.5 rounded-2xl text-xs text-slate-300 hover:text-pink-400 hover:border-pink-500/50 transition flex items-center space-x-2 font-medium shadow-lg">
-        <i class="fa-brands fa-instagram text-pink-500 text-sm"></i>
-        <span>Instagram</span>
-      </a>
+    <!-- Bottom Secondary Info & Socials (Clean flex row on both mobile & desktop) -->
+    <div class="w-full max-w-md flex items-center justify-between px-1 text-[11px] text-slate-400 font-medium">
+      <div>© 2026 Detx Gaming</div>
+      <div class="flex items-center space-x-3">
+        <a href="https://www.youtube.com/@detxislive" target="_blank" rel="noopener noreferrer" 
+           class="hover:text-red-400 transition flex items-center space-x-1">
+          <i class="fa-brands fa-youtube text-red-500"></i>
+          <span>YouTube</span>
+        </a>
+        <a href="https://www.instagram.com/detxgaming/" target="_blank" rel="noopener noreferrer" 
+           class="hover:text-pink-400 transition flex items-center space-x-1">
+          <i class="fa-brands fa-instagram text-pink-500"></i>
+          <span>Instagram</span>
+        </a>
+      </div>
     </div>
 
   </footer>
