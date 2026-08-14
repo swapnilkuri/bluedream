@@ -9,11 +9,15 @@
   <link rel="stylesheet" href="styles.css" />
   <!-- Font Awesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body class="h-screen w-screen overflow-hidden bg-slate-950 text-white relative font-sans">
 
-  <!-- Native Hidden Audio Player Element -->
-  <audio id="main-audio" preload="metadata"></audio>
+  <!-- Hidden YouTube Player Container -->
+  <div class="hidden">
+    <div id="yt-player"></div>
+  </div>
 
   <!-- Background Overlay Image / Gradient -->
   <div class="absolute inset-0 bg-cover bg-center z-0 opacity-80" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920&auto=format&fit=crop');">
@@ -89,12 +93,12 @@
         </button>
       </div>
 
-      <!-- Volume Controls Divider & Slider -->
+      <!-- Volume Controls -->
       <div class="hidden sm:flex items-center space-x-2 border-l border-slate-700/60 pl-3">
         <button id="volume-btn" class="text-slate-400 hover:text-cyan-300 transition text-sm">
           <i class="fa-solid fa-volume-high" id="volume-icon"></i>
         </button>
-        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.8" 
+        <input type="range" id="volume-slider" min="0" max="100" step="1" value="80" 
                class="w-16 sm:w-20 accent-cyan-400 cursor-pointer h-1.5 bg-slate-700 rounded-lg">
       </div>
 
