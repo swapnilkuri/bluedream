@@ -56,6 +56,32 @@
     </p>
   </main>
 
+  <!-- Playlist Modal / Overlay -->
+  <div id="playlist-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 px-4">
+    <div class="bg-slate-900/90 border border-slate-700/70 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl backdrop-blur-xl flex flex-col max-h-[85vh] transform scale-95 transition-transform duration-300" id="modal-container">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-xs font-bold tracking-widest text-slate-400 uppercase">PLAYLISTS</h3>
+        <button id="close-modal-btn" class="text-slate-400 hover:text-white transition">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="flex items-center space-x-2 py-3 border-b border-slate-800/80 text-[11px] font-semibold">
+        <button class="bg-slate-800 text-cyan-300 px-3 py-1.5 rounded-xl">BENGALI VIBES</button>
+        <button class="text-slate-400 hover:text-slate-200 px-3 py-1.5 transition">LOFI CHILL</button>
+      </div>
+      <p class="text-[11px] text-slate-400 py-2">The main curated playlist selection.</p>
+
+      <!-- Scrollable Track List -->
+      <div class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar" id="playlist-items-container">
+        <!-- Rendered dynamically by script.js -->
+      </div>
+    </div>
+  </div>
+
   <!-- Bottom Navigation & Controls Bar -->
   <footer class="absolute bottom-6 left-0 right-0 z-20 px-6 flex flex-col md:flex-row items-center justify-between gap-4">
     
@@ -64,44 +90,54 @@
       © 2026 Detx Gaming
     </div>
 
-    <!-- Bottom Center: Audio Player Widget -->
-    <div class="bg-slate-900/80 backdrop-blur-lg border border-slate-700/60 rounded-2xl p-3 sm:px-5 sm:py-3 flex items-center space-x-3 sm:space-x-4 shadow-2xl max-w-lg w-full">
+    <!-- Bottom Center: Audio Player Widget Stack -->
+    <div class="flex flex-col items-center max-w-lg w-full">
       
-      <!-- Track Icon -->
-      <div class="w-10 h-10 rounded-lg bg-indigo-600/50 flex items-center justify-center text-cyan-300 shrink-0">
-        <i class="fa-solid fa-music"></i>
+      <!-- Pill Button to Open Playlist -->
+      <button id="open-playlist-btn" class="bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-600/50 text-[11px] font-bold tracking-wider uppercase px-4 py-1 rounded-t-xl transition flex items-center space-x-2 shadow-md backdrop-blur-md -mb-[1px]">
+        <span>RADIO PLAYLIST</span>
+        <i class="fa-solid fa-chevron-up text-[9px]"></i>
+      </button>
+
+      <!-- Main Player Widget Bar -->
+      <div class="bg-slate-900/80 backdrop-blur-lg border border-slate-700/60 rounded-2xl p-3 sm:px-5 sm:py-3 flex items-center space-x-3 sm:space-x-4 shadow-2xl w-full">
+        
+        <!-- Track Icon -->
+        <div class="w-10 h-10 rounded-lg bg-indigo-600/50 flex items-center justify-center text-cyan-300 shrink-0">
+          <i class="fa-solid fa-music"></i>
+        </div>
+
+        <!-- Track Info -->
+        <div class="flex-1 min-w-0">
+          <h4 id="track-title" class="text-xs font-semibold text-slate-100 truncate">Loading...</h4>
+          <p id="track-artist" class="text-[10px] text-slate-400 truncate">Loading...</p>
+        </div>
+
+        <!-- Playback Controls -->
+        <div class="flex items-center space-x-1.5 shrink-0">
+          <button id="prev-btn" class="w-8 h-8 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition">
+            <i class="fa-solid fa-backward-step text-xs"></i>
+          </button>
+
+          <button id="play-btn" class="w-10 h-10 rounded-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center justify-center font-bold transition shadow-md">
+            <i class="fa-solid fa-play ml-0.5"></i>
+          </button>
+
+          <button id="next-btn" class="w-8 h-8 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition">
+            <i class="fa-solid fa-forward-step text-xs"></i>
+          </button>
+        </div>
+
+        <!-- Volume Controls -->
+        <div class="hidden sm:flex items-center space-x-2 border-l border-slate-700/60 pl-3">
+          <button id="volume-btn" class="text-slate-400 hover:text-cyan-300 transition text-sm">
+            <i class="fa-solid fa-volume-high" id="volume-icon"></i>
+          </button>
+          <input type="range" id="volume-slider" min="0" max="100" step="1" value="80" 
+                 class="w-16 sm:w-20 accent-cyan-400 cursor-pointer h-1.5 bg-slate-700 rounded-lg">
+        </div>
+
       </div>
-
-      <!-- Track Info -->
-      <div class="flex-1 min-w-0">
-        <h4 id="track-title" class="text-xs font-semibold text-slate-100 truncate">Loading...</h4>
-        <p id="track-artist" class="text-[10px] text-slate-400 truncate">Loading...</p>
-      </div>
-
-      <!-- Playback Controls -->
-      <div class="flex items-center space-x-1.5 shrink-0">
-        <button id="prev-btn" class="w-8 h-8 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition">
-          <i class="fa-solid fa-backward-step text-xs"></i>
-        </button>
-
-        <button id="play-btn" class="w-10 h-10 rounded-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center justify-center font-bold transition shadow-md">
-          <i class="fa-solid fa-play ml-0.5"></i>
-        </button>
-
-        <button id="next-btn" class="w-8 h-8 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition">
-          <i class="fa-solid fa-forward-step text-xs"></i>
-        </button>
-      </div>
-
-      <!-- Volume Controls -->
-      <div class="hidden sm:flex items-center space-x-2 border-l border-slate-700/60 pl-3">
-        <button id="volume-btn" class="text-slate-400 hover:text-cyan-300 transition text-sm">
-          <i class="fa-solid fa-volume-high" id="volume-icon"></i>
-        </button>
-        <input type="range" id="volume-slider" min="0" max="100" step="1" value="80" 
-               class="w-16 sm:w-20 accent-cyan-400 cursor-pointer h-1.5 bg-slate-700 rounded-lg">
-      </div>
-
     </div>
 
     <!-- Bottom Right: Social Link Buttons -->
