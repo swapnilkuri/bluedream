@@ -7,7 +7,7 @@
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="styles.css" />
-  <!-- Font Awesome for Player & Social Icons -->
+  <!-- Font Awesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body class="h-screen w-screen overflow-hidden bg-slate-950 text-white relative font-sans">
@@ -50,15 +50,15 @@
   </main>
 
   <!-- Bottom Navigation & Controls Bar -->
-  <footer class="absolute bottom-6 left-0 right-0 z-20 px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+  <footer class="absolute bottom-6 left-0 right-0 z-20 px-6 flex flex-col md:flex-row items-center justify-between gap-4">
     
     <!-- Bottom Left: Copyright Badge -->
     <div class="bg-slate-900/60 backdrop-blur-md border border-slate-700/50 px-5 py-2.5 rounded-2xl text-xs text-slate-300 font-medium tracking-wider shadow-lg">
       © 2026 Detx Gaming
     </div>
 
-    <!-- Bottom Center: Audio Player Widget with Next/Prev Controls -->
-    <div class="bg-slate-900/80 backdrop-blur-lg border border-slate-700/60 rounded-2xl p-3 sm:px-6 sm:py-3 flex items-center space-x-4 shadow-2xl max-w-md w-full">
+    <!-- Bottom Center: Audio Player Widget with Volume Controls -->
+    <div class="bg-slate-900/80 backdrop-blur-lg border border-slate-700/60 rounded-2xl p-3 sm:px-5 sm:py-3 flex items-center space-x-3 sm:space-x-4 shadow-2xl max-w-lg w-full">
       
       <!-- Track Icon -->
       <div class="w-10 h-10 rounded-lg bg-indigo-600/50 flex items-center justify-center text-cyan-300 shrink-0">
@@ -72,7 +72,7 @@
       </div>
 
       <!-- Playback Controls -->
-      <div class="flex items-center space-x-2 shrink-0">
+      <div class="flex items-center space-x-1.5 shrink-0">
         <button id="prev-btn" class="w-8 h-8 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition">
           <i class="fa-solid fa-backward-step text-xs"></i>
         </button>
@@ -85,6 +85,16 @@
           <i class="fa-solid fa-forward-step text-xs"></i>
         </button>
       </div>
+
+      <!-- Volume Controls Divider & Slider -->
+      <div class="hidden sm:flex items-center space-x-2 border-l border-slate-700/60 pl-3">
+        <button id="volume-btn" class="text-slate-400 hover:text-cyan-300 transition text-sm">
+          <i class="fa-solid fa-volume-high" id="volume-icon"></i>
+        </button>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.8" 
+               class="w-16 sm:w-20 accent-cyan-400 cursor-pointer h-1.5 bg-slate-700 rounded-lg">
+      </div>
+
     </div>
 
     <!-- Bottom Right: Social Link Buttons -->
