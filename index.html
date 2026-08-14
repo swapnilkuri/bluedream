@@ -14,7 +14,7 @@
 </head>
 <body class="h-screen w-screen overflow-hidden bg-slate-950 text-white relative font-sans">
 
-  <!-- Offscreen YouTube Player Container (Must remain rendered in DOM for iframe API to run) -->
+  <!-- Offscreen YouTube Player Container -->
   <div style="position: fixed; top: -9999px; left: -9999px; width: 10px; height: 10px; overflow: hidden;">
     <div id="yt-player"></div>
   </div>
@@ -52,11 +52,11 @@
       BLUE DREAM
     </h1>
     <p class="mt-4 text-slate-300 text-sm sm:text-base max-w-md font-light">
-     Be a dreamer.
+      Atmospheric relaxation, live vibes, and continuous soundwaves.
     </p>
   </main>
 
-  <!-- Playlist Modal (Default hidden) -->
+  <!-- Playlist Modal -->
   <div id="playlist-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md px-4">
     <div class="bg-slate-900/95 border border-slate-700/70 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl backdrop-blur-xl flex flex-col max-h-[80vh]">
       
@@ -99,9 +99,9 @@
       <!-- Main Player Widget Bar -->
       <div class="bg-slate-900/80 backdrop-blur-lg border border-slate-700/60 rounded-2xl p-3 sm:px-5 sm:py-3 flex items-center space-x-3 sm:space-x-4 shadow-2xl w-full">
         
-        <!-- Track Icon -->
-        <div class="w-10 h-10 rounded-lg bg-indigo-600/50 flex items-center justify-center text-cyan-300 shrink-0">
-          <i class="fa-solid fa-music"></i>
+        <!-- Track Thumbnail Image -->
+        <div class="w-11 h-11 rounded-xl bg-slate-800 border border-slate-700/50 overflow-hidden shrink-0 shadow-md">
+          <img id="track-cover" src="" alt="Album Art" class="w-full h-full object-cover">
         </div>
 
         <!-- Track Info -->
