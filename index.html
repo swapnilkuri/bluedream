@@ -14,8 +14,8 @@
 </head>
 <body class="h-screen w-screen overflow-hidden bg-slate-950 text-white relative font-sans">
 
-  <!-- Hidden YouTube Player Container -->
-  <div class="hidden">
+  <!-- Offscreen YouTube Player Container (Must remain rendered in DOM for iframe API to run) -->
+  <div style="position: fixed; top: -9999px; left: -9999px; width: 10px; height: 10px; overflow: hidden;">
     <div id="yt-player"></div>
   </div>
 
@@ -56,28 +56,25 @@
     </p>
   </main>
 
-  <!-- Playlist Modal / Overlay -->
-  <div id="playlist-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 px-4">
-    <div class="bg-slate-900/90 border border-slate-700/70 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl backdrop-blur-xl flex flex-col max-h-[85vh] transform scale-95 transition-transform duration-300" id="modal-container">
+  <!-- Playlist Modal (Default hidden) -->
+  <div id="playlist-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md px-4">
+    <div class="bg-slate-900/95 border border-slate-700/70 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-2xl backdrop-blur-xl flex flex-col max-h-[80vh]">
       
       <!-- Modal Header -->
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
         <h3 class="text-xs font-bold tracking-widest text-slate-400 uppercase">PLAYLISTS</h3>
-        <button id="close-modal-btn" class="text-slate-400 hover:text-white transition">
-          <i class="fa-solid fa-xmark text-base"></i>
+        <button id="close-modal-btn" class="text-slate-400 hover:text-white transition p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <!-- Category Filter Tabs -->
       <div class="flex items-center space-x-2 py-3 border-b border-slate-800/80 text-[11px] font-semibold">
-        <button class="bg-slate-800 text-cyan-300 px-3 py-1.5 rounded-xl">BENGALI VIBES</button>
-        <button class="text-slate-400 hover:text-slate-200 px-3 py-1.5 transition">LOFI CHILL</button>
+        <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-xl">BENGALI VIBES</span>
       </div>
-      <p class="text-[11px] text-slate-400 py-2">The main curated playlist selection.</p>
 
       <!-- Scrollable Track List -->
-      <div class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar" id="playlist-items-container">
-        <!-- Rendered dynamically by script.js -->
+      <div class="flex-1 overflow-y-auto space-y-2 py-3 pr-1 custom-scrollbar" id="playlist-items-container">
+        <!-- Rendered dynamically -->
       </div>
     </div>
   </div>
@@ -94,7 +91,7 @@
     <div class="flex flex-col items-center max-w-lg w-full">
       
       <!-- Pill Button to Open Playlist -->
-      <button id="open-playlist-btn" class="bg-slate-800/80 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-600/50 text-[11px] font-bold tracking-wider uppercase px-4 py-1 rounded-t-xl transition flex items-center space-x-2 shadow-md backdrop-blur-md -mb-[1px]">
+      <button id="open-playlist-btn" class="bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-600/60 text-[11px] font-bold tracking-wider uppercase px-4 py-1.5 rounded-t-xl transition flex items-center space-x-2 shadow-md cursor-pointer -mb-[1px]">
         <span>RADIO PLAYLIST</span>
         <i class="fa-solid fa-chevron-up text-[9px]"></i>
       </button>
