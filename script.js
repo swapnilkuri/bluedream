@@ -13,42 +13,32 @@ const playlist = [
   {
     title: "O Je Mane Na Mana",
     artist: "Arnob & Sunidhi Nayak",
-    src: "./audio/song1.mp3"
+    src: encodeURI("audio/O Je Mane Na Mana (ও যে মানে না মানা) Arnob Sunidhi Nayak Best Of Tagore - 256.MP3")
   },
   {
     title: "Ekhon Onek Raat",
     artist: "Anupam Roy (Hemlock Society)",
-    src: "./audio/song2.mp3"
+    src: encodeURI("audio/Ekhon Onek Raat (এখন অনেক রাত ) Hemlock Society Anupam Roy Srijit Parambrata Koel SVF - 320.MP3")
   },
   {
     title: "Amake Amar Moto Thakte Dao",
     artist: "Anupam Roy (Autograph)",
-    src: "./audio/song3.mp3"
+    src: encodeURI("audio/Amake Amar Moto Thakte Dao Autograph Prosenjit Chatterjee Anupam Roy Srijit Mukherji SVF - 256.MP3")
   },
   {
     title: "Mayabono Biharini",
     artist: "Somlata (Bedroom)",
-    src: "./audio/song4.mp3"
+    src: encodeURI("audio/Mayabono Biharini from BEDROOM by Somlata - 256.MP3")
   },
   {
     title: "Boba Tunnel",
     artist: "Anupam Roy (Chotushkone)",
-    src: "./audio/song5.mp3"
+    src: encodeURI("audio/Official Boba Tunnel Video Song Bengali Film Chotushkone Anupam Roy - 256.MP3")
   },
   {
     title: "Benche Thakar Gaan",
     artist: "Rupam & Anupam (Autograph)",
-    src: "./audio/song6.mp3"
-  },
-  {
-    title: "Ekbar Bol",
-    artist: "Anupam Roy (Baishe Srabon)",
-    src: "./audio/song7.mp3"
-  },
-  {
-    title: "Ranjha",
-    artist: "B Praak & Jasleen Royal (Shershaah)",
-    src: "./audio/song8.mp3"
+    src: encodeURI("audio/Benche Thakar Gaan (বেঁচে থাকার গান) Autograph Video Song Prosenjit Anupam Rupam Srijit - 320.MP3")
   }
 ];
 
@@ -95,7 +85,7 @@ function pauseTrack() {
   if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
 }
 
-// Play / Pause Button
+// Play / Pause Toggle
 if (playBtn) {
   playBtn.addEventListener('click', () => {
     if (isPlaying) {
@@ -123,7 +113,7 @@ if (prevBtn) {
   });
 }
 
-// Auto-play Next Song when current ends
+// Auto-advance track when current finishes
 audio.addEventListener('ended', () => {
   currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
   loadTrack(currentTrackIndex);
@@ -166,7 +156,7 @@ function updateVolumeIcon(vol) {
   }
 }
 
-// Initialize First Track
+// Load First Track on startup
 loadTrack(currentTrackIndex);
 
 // --- 3. Fullscreen Toggle ---
