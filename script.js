@@ -12,24 +12,60 @@ const playlist = [
   {
     title: "O Je Mane Na Mana",
     artist: "Arnob & Sunidhi Nayak",
-    src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" // Sample Chill Lofi Audio
+    src: "/audio/song1.mp3"
   },
   {
     title: "Ekhon Onek Raat",
     artist: "Anupam Roy (Hemlock Society)",
-    src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3"
+    src: "/audio/song2.mp3"
+  },
+  {
+    title: "Amake Amar Moto Thakte Dao",
+    artist: "Anupam Roy (Autograph)",
+    src: "/audio/song3.mp3"
+  },
+  {
+    title: "Mayabono Biharini",
+    artist: "Somlata (Bedroom)",
+    src: "/audio/song4.mp3"
+  },
+  {
+    title: "Boba Tunnel",
+    artist: "Anupam Roy (Chotushkone)",
+    src: "/audio/song5.mp3"
+  },
+  {
+    title: "Benche Thakar Gaan",
+    artist: "Rupam & Anupam (Autograph)",
+    src: "/audio/song6.mp3"
+  },
+  {
+    title: "Ekbar Bol",
+    artist: "Anupam Roy (Baishe Srabon)",
+    src: "/audio/song7.mp3"
+  },
+  {
+    title: "Ranjha",
+    artist: "B Praak & Jasleen Royal (Shershaah)",
+    src: "/audio/song8.mp3"
   }
 ];
 
 let currentTrackIndex = 0;
 let isPlaying = false;
 let audio = new Audio();
+audio.volume = 0.8; // Default volume (80%)
 
 const playBtn = document.getElementById('play-btn');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 const trackTitle = document.getElementById('track-title');
 const trackArtist = document.getElementById('track-artist');
+
+const volumeSlider = document.getElementById('volume-slider');
+const volumeBtn = document.getElementById('volume-btn');
+const volumeIcon = document.getElementById('volume-icon');
+let lastVolume = 0.8;
 
 function loadTrack(index) {
   const track = playlist[index];
@@ -45,7 +81,7 @@ function playTrack() {
       playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
     })
     .catch((err) => {
-      console.error("Audio playback error:", err);
+      console.error("Playback error:", err);
     });
 }
 
@@ -55,7 +91,7 @@ function pauseTrack() {
   playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
 }
 
-// Controls Logic
+// Play / Pause Toggle
 playBtn.addEventListener('click', () => {
   if (isPlaying) {
     pauseTrack();
@@ -64,6 +100,7 @@ playBtn.addEventListener('click', () => {
   }
 });
 
+// Next / Previous Controls
 nextBtn.addEventListener('click', () => {
   currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
   loadTrack(currentTrackIndex);
@@ -76,14 +113,49 @@ prevBtn.addEventListener('click', () => {
   if (isPlaying) playTrack();
 });
 
-// Auto-play next track when current finishes
+// Auto-play Next Song
 audio.addEventListener('ended', () => {
   currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
   loadTrack(currentTrackIndex);
   playTrack();
 });
 
-// Initialize first track on page load
+// Volume Slider Control
+if (volumeSlider) {
+  volumeSlider.addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value);
+    audio.volume = val;
+    updateVolumeIcon(val);
+  });
+}
+
+// Mute / Unmute Toggle Button
+if (volumeBtn) {
+  volumeBtn.addEventListener('click', () => {
+    if (audio.volume > 0) {
+      lastVolume = audio.volume;
+      audio.volume = 0;
+      volumeSlider.value = 0;
+      updateVolumeIcon(0);
+    } else {
+      audio.volume = lastVolume || 0.8;
+      volumeSlider.value = audio.volume;
+      updateVolumeIcon(audio.volume);
+    }
+  });
+}
+
+function updateVolumeIcon(vol) {
+  if (vol === 0) {
+    volumeIcon.className = "fa-solid fa-volume-xmark text-slate-500";
+  } else if (vol < 0.5) {
+    volumeIcon.className = "fa-solid fa-volume-low text-cyan-300";
+  } else {
+    volumeIcon.className = "fa-solid fa-volume-high text-cyan-300";
+  }
+}
+
+// Initialize First Track
 loadTrack(currentTrackIndex);
 
 // --- 3. Fullscreen Toggle ---
