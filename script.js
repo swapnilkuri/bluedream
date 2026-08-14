@@ -13,7 +13,7 @@ const playlist = [
   {
     title: "O Je Mane Na Mana",
     artist: "Arnob & Sunidhi Nayak",
-    src: "audio/O Je Mane Na Mana (ও যে মানে না মানা) Arnob Sunidhi Nayak Best Of Tagore - 256.MP3"
+    src: "https://music.youtube.com/watch?v=wC3FrA70jwI"
   },
   {
     title: "Ekhon Onek Raat",
@@ -23,22 +23,22 @@ const playlist = [
   {
     title: "Amake Amar Moto Thakte Dao",
     artist: "Anupam Roy (Autograph)",
-    src: "audio/Amake Amar Moto Thakte Dao Autograph Prosenjit Chatterjee Anupam Roy Srijit Mukherji SVF - 256.MP3"
+    src: "https://music.youtube.com/watch?v=vYsfSlEBh5Y"
   },
   {
     title: "Mayabono Biharini",
     artist: "Somlata (Bedroom)",
-    src: "audio/Mayabono Biharini from BEDROOM by Somlata - 256.MP3"
+    src: "https://music.youtube.com/watch?v=1aGwOBgyWTo"
   },
   {
     title: "Boba Tunnel",
     artist: "Anupam Roy (Chotushkone)",
-    src: "audio/Official Boba Tunnel Video Song Bengali Film Chotushkone Anupam Roy - 256.MP3"
+    src: "https://music.youtube.com/watch?v=GeX_hFhdD8k"
   },
   {
     title: "Benche Thakar Gaan",
     artist: "Rupam & Anupam (Autograph)",
-    src: "audio/Benche Thakar Gaan (বেঁচে থাকার গান) Autograph Video Song Prosenjit Anupam Rupam Srijit - 320.MP3"
+    src: "https://music.youtube.com/watch?v=JPp4Urgfs0U"
   }
 ];
 
