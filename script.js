@@ -83,7 +83,6 @@ let currentTrackIndex = 0;
 let player;
 let isPlayerReady = false;
 let isPlaying = false;
-let isBuffering = false;
 let currentVolume = 80;
 
 const playBtn = document.getElementById('play-btn');
@@ -107,12 +106,12 @@ window.onYouTubeIframeAPIReady = function() {
       controls: 0,
       playsinline: 1,
       rel: 0,
-      enablejsapi: 1,
-      origin: window.location.origin
+      modestbranding: 1
     },
     events: {
       onReady: onPlayerReady,
-      onStateChange: onPlayerStateChange
+      onStateChange: onPlayerStateChange,
+      onError: onPlayerError
     }
   });
 };
@@ -120,27 +119,28 @@ window.onYouTubeIframeAPIReady = function() {
 function onPlayerReady() {
   isPlayerReady = true;
   player.setVolume(currentVolume);
-  player.cueVideoById(activePlaylist[currentTrackIndex].videoId);
   updateTrackUI();
   renderPlaylistModal();
 }
 
 function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.BUFFERING) {
-    isBuffering = true;
-    if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
-  } else if (event.data === YT.PlayerState.PLAYING) {
+  if (event.data === YT.PlayerState.PLAYING) {
     isPlaying = true;
-    isBuffering = false;
     if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
   } else if (event.data === YT.PlayerState.PAUSED) {
     isPlaying = false;
-    isBuffering = false;
     if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
+  } else if (event.data === YT.PlayerState.BUFFERING) {
+    if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
   } else if (event.data === YT.PlayerState.ENDED) {
     nextTrack();
   }
   renderPlaylistModal();
+}
+
+function onPlayerError(e) {
+  console.warn("Playback restriction on track, skipping to next:", e.data);
+  nextTrack();
 }
 
 function updateTrackUI() {
@@ -161,14 +161,11 @@ function loadAndPlayTrack(index, category = null) {
   }
   currentTrackIndex = index;
   updateTrackUI();
-  if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
   
+  if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
+
   if (isPlayerReady && player) {
-    player.loadVideoById({
-      videoId: activePlaylist[currentTrackIndex].videoId,
-      startSeconds: 0,
-      suggestedQuality: 'small'
-    });
+    player.loadVideoById(activePlaylist[currentTrackIndex].videoId);
     player.playVideo();
   }
 }
@@ -199,7 +196,7 @@ if (playBtn) {
 if (nextBtn) nextBtn.addEventListener('click', nextTrack);
 if (prevBtn) prevBtn.addEventListener('click', prevTrack);
 
-// Volume Controls
+// Volume Handlers
 if (volumeSlider) {
   volumeSlider.addEventListener('input', (e) => {
     const val = parseInt(e.target.value);
