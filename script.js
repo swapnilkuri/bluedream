@@ -8,7 +8,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// --- 2. Multi-Song Playlist Data ---
+// --- 2. Multi-Song Playlist Engine ---
 const playlist = [
   {
     title: "O Je Mane Na Mana",
@@ -46,6 +46,7 @@ let player;
 let isPlayerReady = false;
 let currentTrackIndex = 0;
 let isPlaying = false;
+let isBuffering = false;
 let currentVolume = 80;
 
 const playBtn = document.getElementById('play-btn');
@@ -57,7 +58,7 @@ const volumeSlider = document.getElementById('volume-slider');
 const volumeBtn = document.getElementById('volume-btn');
 const volumeIcon = document.getElementById('volume-icon');
 
-// Initialize YouTube IFrame API
+// Initialize YouTube IFrame with Pre-buffering flags
 window.onYouTubeIframeAPIReady = function() {
   player = new YT.Player('yt-player', {
     height: '200',
@@ -66,7 +67,10 @@ window.onYouTubeIframeAPIReady = function() {
     playerVars: {
       autoplay: 0,
       controls: 0,
-      playsinline: 1
+      playsinline: 1,
+      rel: 0,
+      enablejsapi: 1,
+      origin: window.location.origin
     },
     events: {
       onReady: onPlayerReady,
@@ -78,15 +82,25 @@ window.onYouTubeIframeAPIReady = function() {
 function onPlayerReady() {
   isPlayerReady = true;
   player.setVolume(currentVolume);
+  // Pre-cue video so audio chunks are fetched immediately
+  player.cueVideoById(playlist[currentTrackIndex].videoId);
   updateTrackUI(currentTrackIndex);
+  renderPlaylistModal();
 }
 
 function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.PLAYING) {
+  if (event.data === YT.PlayerState.BUFFERING) {
+    isBuffering = true;
+    if (playBtn) {
+      playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
+    }
+  } else if (event.data === YT.PlayerState.PLAYING) {
     isPlaying = true;
+    isBuffering = false;
     if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
   } else if (event.data === YT.PlayerState.PAUSED) {
     isPlaying = false;
+    isBuffering = false;
     if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play ml-0.5"></i>';
   } else if (event.data === YT.PlayerState.ENDED) {
     nextTrack();
@@ -104,8 +118,14 @@ function updateTrackUI(index) {
 function loadAndPlayTrack(index) {
   currentTrackIndex = index;
   updateTrackUI(currentTrackIndex);
+  if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
+  
   if (isPlayerReady && player) {
-    player.loadVideoById(playlist[currentTrackIndex].videoId);
+    player.loadVideoById({
+      videoId: playlist[currentTrackIndex].videoId,
+      startSeconds: 0,
+      suggestedQuality: 'small' // Audio-optimized low bandwidth stream for faster loading
+    });
     player.playVideo();
   }
 }
@@ -127,6 +147,7 @@ if (playBtn) {
     if (isPlaying) {
       player.pauseVideo();
     } else {
+      playBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
       player.playVideo();
     }
   });
@@ -220,7 +241,7 @@ function renderPlaylistModal() {
     item.innerHTML = `
       <span class="text-xs font-semibold ${isCurrent ? 'text-cyan-300' : 'text-slate-500'} w-5 text-center">${num}</span>
       <div class="w-8 h-8 rounded-lg bg-indigo-600/40 flex items-center justify-center text-xs shrink-0">
-        <i class="fa-solid ${isCurrent && isPlaying ? 'fa-volume-high animate-pulse text-cyan-300' : 'fa-music'}"></i>
+        <i class="fa-solid ${isCurrent && isPlaying ? 'fa-volume-high animate-pulse text-cyan-300' : isCurrent && isBuffering ? 'fa-spinner fa-spin text-cyan-300' : 'fa-music'}"></i>
       </div>
       <div class="flex-1 min-w-0">
         <h5 class="text-xs font-semibold truncate ${isCurrent ? 'text-cyan-200' : 'text-slate-100'}">${track.title}</h5>
